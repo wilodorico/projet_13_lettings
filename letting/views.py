@@ -3,7 +3,7 @@ from django.shortcuts import render
 from letting.models import Letting
 
 
-def lettings_index(request):
+def index(request):
     lettings_list = Letting.objects.all()
     context = {"lettings_list": lettings_list}
     return render(request, "letting/lettings_index.html", context)
