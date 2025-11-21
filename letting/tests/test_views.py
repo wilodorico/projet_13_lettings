@@ -48,3 +48,11 @@ def test_letting_detail_view(client, sample_letting):
     assert response.context["address"] == sample_letting.address
     assert "letting/letting.html" in [t.name for t in response.templates]
     
+    
+@pytest.mark.django_db
+def test_letting_detail_view_404_not_found(client):
+    """Test the letting detail view returns 404 for non-existent letting."""
+    url = reverse("letting:letting", args=[9999])  # Assuming 9999 does not exist
+    response = client.get(url)
+
+    assert response.status_code == 404

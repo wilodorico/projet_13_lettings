@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from letting.models import Letting
 
@@ -22,21 +22,21 @@ def index(request):
 
 def letting(request, letting_id):
     """Display detailed information for a specific letting.
-
+    
     Retrieves a specific Letting object by ID and displays its details
     including title and associated address information.
-
+    
     Args:
         request: HTTP request object.
         letting_id: ID of the letting to display.
-
+        
     Returns:
         HttpResponse: Rendered letting detail page with title and address.
-
+        
     Raises:
-        DoesNotExist: If no letting exists with the provided ID.
+        Http404: If no letting exists with the provided ID.
     """
-    letting = Letting.objects.get(id=letting_id)
+    letting = get_object_or_404(Letting, id=letting_id)
     context = {
         "title": letting.title,
         "address": letting.address,
