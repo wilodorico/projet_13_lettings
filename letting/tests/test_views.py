@@ -1,6 +1,7 @@
 import pytest
 from django.urls import reverse
 from letting.models import Address, Letting
+from pytest_django.asserts import assertTemplateUsed
 
 
 @pytest.fixture
@@ -34,7 +35,7 @@ def test_index_view(client, sample_letting):
     assert response.status_code == 200
     assert "lettings_list" in response.context
     assert sample_letting in response.context["lettings_list"]
-    assert "letting/index.html" in [t.name for t in response.templates]
+    assertTemplateUsed(response, "letting/index.html")
     
     
 @pytest.mark.django_db
@@ -46,7 +47,7 @@ def test_letting_detail_view(client, sample_letting):
     assert response.status_code == 200
     assert response.context["title"] == sample_letting.title
     assert response.context["address"] == sample_letting.address
-    assert "letting/letting.html" in [t.name for t in response.templates]
+    assertTemplateUsed(response, "letting/letting.html")
     
     
 @pytest.mark.django_db
