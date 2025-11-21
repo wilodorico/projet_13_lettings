@@ -8,16 +8,16 @@ from profiles.models import Profile
 
 
 @pytest.fixture
-def alice_profile():
+def alice_profile(django_user_model):
     """Fixture to create a user and associated profile for testing."""
-    user = User.objects.create(first_name="Alice", last_name="Doe", email="alice@example.com", username="alicedoe")
+    user = django_user_model.objects.create(first_name="Alice", last_name="Doe", email="alice@example.com", username="alicedoe")
     profile = Profile.objects.create(user=user, favorite_city="Paris")
     return profile
 
 @pytest.fixture
-def bob_profile():
+def bob_profile(django_user_model):
     """Fixture to create another user and associated profile for testing."""
-    user = User.objects.create(first_name="Bob", last_name="Smith", email="bob@example.com", username="bobsmith")
+    user = django_user_model.objects.create(first_name="Bob", last_name="Smith", email="bob@example.com", username="bobsmith")
     profile = Profile.objects.create(user=user, favorite_city="New York")
     return profile
 
