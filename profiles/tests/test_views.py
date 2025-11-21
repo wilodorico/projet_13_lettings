@@ -1,7 +1,6 @@
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 
-from django.contrib.auth.models import User
 from django.urls import reverse
 
 from profiles.models import Profile
