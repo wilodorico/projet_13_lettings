@@ -51,3 +51,12 @@ def test_profiles_detail_view(client, alice_profile):
     assert response.context["profile"].favorite_city == "Paris"
     assertTemplateUsed(response, "profiles/profile.html")
     
+    
+@pytest.mark.django_db
+def test_profiles_detail_view_404_not_found(client):
+    """The profile detail view should return 404 for non-existent username."""
+    
+    url = reverse("profiles:profile", args=["nonexistentuser"])
+    response = client.get(url)
+    
+    assert response.status_code == 404
