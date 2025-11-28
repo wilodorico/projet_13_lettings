@@ -50,3 +50,4 @@ def test_letting_detail_view_404_not_found(client):
     response = client.get(url)
 
     assert response.status_code == 404
+    assertTemplateUsed(response, "404.html")

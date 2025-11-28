@@ -1,4 +1,5 @@
-from django.urls import reverse, resolve
+from django.urls import resolve, reverse
+
 from profiles import views
 
 
@@ -20,4 +21,5 @@ def test_profiles_detail_url_resolves():
     assert resolved.func == views.profile
     assert resolved.url_name == "profile"
     assert resolved.namespace == "profiles"
+    assert resolved.kwargs == {"username": "johndoe"}
     assert resolved.kwargs == {"username": "johndoe"}

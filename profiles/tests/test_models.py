@@ -1,4 +1,5 @@
 import pytest
+
 from profiles.models import Profile
 
 
@@ -20,6 +21,7 @@ def test_profile_str(django_user_model):
 
     assert str(profile) == "janedoe"
 
+
 @pytest.mark.django_db
 def test_profile_favorite_city_can_be_blank(django_user_model):
     """favorite_city should allow blank values."""
@@ -36,7 +38,7 @@ def test_profile_user_one_to_one_relation(django_user_model):
     profile = Profile.objects.create(user=user)
 
     assert profile.user == user
-    assert user.profile == profile # Reverse relation
+    assert user.profile == profile  # Reverse relation
 
 
 @pytest.mark.django_db
@@ -47,4 +49,5 @@ def test_profile_deletion_on_user_delete(django_user_model):
 
     user.delete()
 
+    assert Profile.objects.count() == 0
     assert Profile.objects.count() == 0
