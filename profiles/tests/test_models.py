@@ -50,4 +50,3 @@ def test_profile_deletion_on_user_delete(django_user_model):
     user.delete()
 
     assert Profile.objects.count() == 0
-    assert Profile.objects.count() == 0
