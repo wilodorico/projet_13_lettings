@@ -1,4 +1,8 @@
+import logging
+
 from django.shortcuts import render
+
+logger = logging.getLogger(__name__)
 
 
 def index(request):
@@ -14,4 +18,9 @@ def index(request):
     Returns:
         HttpResponse: Rendered homepage template.
     """
-    return render(request, "index.html")
+    try:
+        logger.info("Homepage accessed")
+        return render(request, "index.html")
+    except Exception as e:
+        logger.error(f"Error rendering homepage: {str(e)}", exc_info=True)
+        raise
