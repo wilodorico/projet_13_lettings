@@ -78,6 +78,169 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 - Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
 
+## Déploiement avec Docker
+
+### Prérequis
+
+- Docker Desktop installé et démarré
+- Docker Compose (inclus avec Docker Desktop)
+- Fichier `.env` configuré (voir section Configuration)
+
+### Configuration initiale
+
+1. **Copier et configurer les variables d'environnement**
+   ```bash
+   # Copier le fichier d'exemple
+   cp .env.example .env
+   
+   # Éditer .env et configurer vos variables
+   # Notamment : SENTRY_DSN, SECRET_KEY, DEBUG, etc.
+   ```
+
+### Démarrage de l'application
+
+#### Premier lancement
+```bash
+# Construire l'image et démarrer le conteneur
+docker-compose up --build
+
+# Ou en arrière-plan (recommandé)
+docker-compose up -d --build
+```
+
+#### Lancements suivants
+```bash
+# Démarrage simple (sans rebuild)
+docker-compose up
+
+# En arrière-plan
+docker-compose up -d
+```
+
+**Accès à l'application** : `http://localhost:8000`
+
+### Gestion du conteneur
+
+#### Arrêter et supprimer les conteneurs
+```bash
+# Arrête et supprime les conteneurs (les volumes et images sont conservés)
+docker-compose down
+
+# Avec suppression des volumes (⚠️ perte de données)
+docker-compose down -v
+```
+
+#### Arrêter sans supprimer
+```bash
+# Pause le conteneur (peut être redémarré avec docker-compose start)
+docker-compose stop
+
+# Redémarrer après un stop
+docker-compose start
+```
+
+#### Redémarrer le conteneur
+```bash
+docker-compose restart
+```
+
+### Commandes utiles
+
+#### Voir les logs
+```bash
+# Logs en temps réel (mode attaché)
+docker-compose logs -f
+
+# Logs uniquement du service web
+docker-compose logs -f web
+
+# Dernières 100 lignes
+docker-compose logs --tail=100
+```
+
+#### Exécuter des commandes dans le conteneur
+```bash
+# Lancer des commandes Django
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py createsuperuser
+docker-compose exec web python manage.py collectstatic
+
+# Lancer les tests
+docker-compose exec web pytest
+
+# Accéder au shell Python Django
+docker-compose exec web python manage.py shell
+
+# Accéder au shell bash du conteneur
+docker-compose exec web bash
+```
+
+#### Vérifier l'état
+```bash
+# Voir les conteneurs en cours d'exécution
+docker-compose ps
+
+# Voir les logs d'erreurs
+docker-compose logs web | grep -i error
+```
+
+### Utilisation sans Docker Compose
+
+Si vous préférez utiliser Docker directement :
+
+```bash
+# Construire l'image
+docker build -t oc-lettings:latest .
+
+# Lancer le conteneur avec montage de volume
+docker run -d \
+  -p 8000:8000 \
+  -v "$(pwd):/app" \
+  --env-file .env \
+  --name oc-lettings-web \
+  oc-lettings:latest
+
+# Arrêter et supprimer
+docker stop oc-lettings-web
+docker rm oc-lettings-web
+```
+
+### Persistance des données
+
+La base de données SQLite est **persistante** grâce au volume monté :
+```yaml
+volumes:
+  - .:/app  # Le répertoire local est monté dans /app du conteneur
+```
+
+Le fichier `oc-lettings-site.sqlite3` reste sur votre machine locale et survit aux `docker-compose down`.
+
+### Résolution de problèmes
+
+#### Le conteneur ne démarre pas
+```bash
+# Vérifier les logs
+docker-compose logs web
+
+# Reconstruire complètement
+docker-compose down
+docker-compose build --no-cache
+docker-compose up
+```
+
+#### Port 8000 déjà utilisé
+```bash
+# Modifier le port dans docker-compose.yml
+ports:
+  - "8001:8000"  # Utiliser le port 8001 au lieu de 8000
+```
+
+#### Problèmes de permissions (Linux/Mac)
+```bash
+# Ajuster les permissions du fichier SQLite
+chmod 664 oc-lettings-site.sqlite3
+```
+
 ## Configuration Sentry
 
 Sentry est configuré pour capturer automatiquement les erreurs et surveiller les performances de l'application.
