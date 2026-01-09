@@ -10,6 +10,7 @@ Site web d'Orange County Lettings
 - Git CLI
 - SQLite3 CLI
 - Interpréteur Python, version 3.6 ou supérieure
+- Compte Sentry (gratuit) pour la journalisation des erreurs
 
 Dans le reste de la documentation sur le développement local, il est supposé que la commande `python` de votre OS shell exécute l'interpréteur Python ci-dessus (à moins qu'un environnement virtuel ne soit activé).
 
@@ -37,6 +38,7 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 - `cd /path/to/Python-OC-Lettings-FR`
 - `source venv/bin/activate`
 - `pip install --requirement requirements.txt`
+- Copier le fichier `.env.example` vers `.env` et configurer les variables (voir section Configuration Sentry)
 - `python manage.py runserver`
 - Aller sur `http://localhost:8000` dans un navigateur.
 - Confirmer que le site fonctionne et qu'il est possible de naviguer (vous devriez voir plusieurs profils et locations).
@@ -75,3 +77,37 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 
 - Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
+
+## Configuration Sentry
+
+Sentry est configuré pour capturer automatiquement les erreurs et surveiller les performances de l'application.
+
+### Configuration requise
+
+1. **Créer un compte Sentry**
+   - Rendez-vous sur [sentry.io](https://sentry.io/)
+   - Créez un compte gratuit
+   - Créez un nouveau projet Django
+   - Récupérez votre DSN depuis Settings > Projects > Your Project > Client Keys (DSN)
+
+2. **Configurer les variables d'environnement**
+   ```bash
+   # Copier le fichier d'exemple
+   cp .env.example .env
+   
+   # Éditer .env et ajouter vos informations Sentry
+   SENTRY_DSN=https://your-actual-dsn@sentry.io/project-id
+   SENTRY_ENVIRONMENT=development  # ou production, staging, etc.
+   ```
+
+### Fonctionnement
+
+Sentry capturera automatiquement :
+- ✅ Toutes les exceptions non gérées
+- ✅ Les erreurs HTTP 500
+- ✅ Les performances des transactions (requêtes HTTP)
+- ✅ Les logs d'erreurs Django
+
+Les logs sont également enregistrés localement dans le dossier `logs/` :
+- `django.log` : Tous les logs INFO et supérieurs
+- `django_errors.log` : Uniquement les erreurs (ERROR et CRITICAL)
