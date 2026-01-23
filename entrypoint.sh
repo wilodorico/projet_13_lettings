@@ -13,18 +13,7 @@ python manage.py migrate --noinput
 # Create superuser if environment variables are set
 if [ -n "$DJANGO_SUPERUSER_USERNAME" ] && [ -n "$DJANGO_SUPERUSER_PASSWORD" ]; then
     echo "👤 Creating superuser from environment variables..."
-    python manage.py shell <<EOF
-from django.contrib.auth import get_user_model
-import os
-User = get_user_model()
-username = os.getenv('DJANGO_SUPERUSER_USERNAME')
-email = os.getenv('DJANGO_SUPERUSER_EMAIL', 'admin@example.com')
-if not User.objects.filter(username=username).exists():
-    User.objects.create_superuser(username, email, os.getenv('DJANGO_SUPERUSER_PASSWORD'))
-    print(f'✅ Superuser created: {username}')
-else:
-    print(f'ℹ️ Superuser {username} already exists')
-EOF
+    python manage.py createsuperuser --noinput || echo "ℹ️ Superuser already exists or creation failed"
 else
     echo "⚠️ DJANGO_SUPERUSER_USERNAME and DJANGO_SUPERUSER_PASSWORD not set, skipping superuser creation"
 fi
