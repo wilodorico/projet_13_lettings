@@ -47,15 +47,7 @@ jobs:
         DEBUG: True
         DJANGO_ENV: local
       run: |
-        pytest --cov=. --cov-report=xml --cov-report=html --cov-report=term
-    
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v4
-      if: always()
-      with:
-        file: ./coverage.xml
-        fail_ci_if_error: false
-        token: ${{ secrets.CODECOV_TOKEN }}
+        pytest --cov=. --cov-report=xml --cov-report=html --cov-report=term --cov-fail-under=80
 
   # Job 2: Build et Push Docker Image
   build:
