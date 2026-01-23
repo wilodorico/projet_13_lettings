@@ -93,7 +93,7 @@ jobs:
         cache-from: type=registry,ref=${{ secrets.DOCKER_USER_NAME }}/oc-lettings:buildcache
         cache-to: type=registry,ref=${{ secrets.DOCKER_USER_NAME }}/oc-lettings:buildcache,mode=max
 
-  # Job 3: Deploy (exemple - à adapter selon votre plateforme)
+  # Job 3: Deploy to Render
   deploy:
     name: Deploy to Production
     runs-on: ubuntu-latest
@@ -101,27 +101,9 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Deploy notification
+    - name: Deploy to Render
       run: |
-        echo "🚀 Déploiement de l'image Docker..."
-        echo "Image: ${{ secrets.DOCKER_USER_NAME }}/oc-lettings:latest"
-    
-    # Exemple de déploiement vers un serveur distant via SSH
-    # - name: Deploy to server
-    #   uses: appleboy/ssh-action@v1.0.0
-    #   with:
-    #     host: ${{ secrets.SERVER_HOST }}
-    #     username: ${{ secrets.SERVER_USER }}
-    #     key: ${{ secrets.SERVER_SSH_KEY }}
-    #     script: |
-    #       cd /path/to/app
-    #       docker-compose -f docker-compose.prod.yml pull
-    #       docker-compose -f docker-compose.prod.yml up -d
-    
-    # Exemple de déploiement vers Render.com
-    # - name: Trigger Render Deploy
-    #   run: |
-    #     curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+        echo "🚀 Déploiement vers Render.com..."
+        curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+        echo "✅ Déploiement déclenché avec succès!"
+        echo "📦 Image: ${{ secrets.DOCKER_USER_NAME }}/oc-lettings:latest"

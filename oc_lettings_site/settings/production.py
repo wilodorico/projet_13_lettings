@@ -27,10 +27,21 @@ X_FRAME_OPTIONS = "DENY"
 
 
 # Enable when behind HTTPS reverse proxy
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-# HTTPS redirect (uncomment if using HTTPS)
-# SECURE_SSL_REDIRECT = True
-# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# ----------------------------------------
+# Static Files (CSS, JavaScript, Images)
+# ----------------------------------------
+STATIC_ROOT = BASE_DIR / "staticfiles"  # noqa: F405
+STATIC_URL = "/static/"
+
+# WhiteNoise configuration for serving static files
+STORAGE_BACKEND = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Must be after SecurityMiddleware
+] + [m for m in MIDDLEWARE if m != "django.middleware.security.SecurityMiddleware"]  # noqa: F405
 
 # ----------------------------------------
 # Database - PostgreSQL via DATABASE_URL
