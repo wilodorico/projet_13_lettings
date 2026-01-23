@@ -5,10 +5,18 @@ These settings are optimized for development with debug mode enabled.
 """
 
 import os
+from pathlib import Path
 
 import sentry_sdk
+from dotenv import load_dotenv
 
 from .base import *  # noqa
+
+# Load .env file for local development
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+env_file = BASE_DIR / ".env"
+if env_file.exists():
+    load_dotenv(env_file)
 
 # ----------------------------------------
 # Debug and Security
