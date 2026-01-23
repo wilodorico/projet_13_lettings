@@ -70,14 +70,14 @@ jobs:
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
+        username: ${{ secrets.DOCKER_USER_NAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     
     - name: Extract metadata
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ${{ secrets.DOCKER_USERNAME }}/oc-lettings
+        images: ${{ secrets.DOCKER_USER_NAME }}/oc-lettings
         tags: |
           type=ref,event=branch
           type=sha,prefix={{branch}}-
@@ -90,8 +90,8 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/oc-lettings:buildcache
-        cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/oc-lettings:buildcache,mode=max
+        cache-from: type=registry,ref=${{ secrets.DOCKER_USER_NAME }}/oc-lettings:buildcache
+        cache-to: type=registry,ref=${{ secrets.DOCKER_USER_NAME }}/oc-lettings:buildcache,mode=max
 
   # Job 3: Deploy (exemple - à adapter selon votre plateforme)
   deploy:
@@ -107,7 +107,7 @@ jobs:
     - name: Deploy notification
       run: |
         echo "🚀 Déploiement de l'image Docker..."
-        echo "Image: ${{ secrets.DOCKER_USERNAME }}/oc-lettings:latest"
+        echo "Image: ${{ secrets.DOCKER_USER_NAME }}/oc-lettings:latest"
     
     # Exemple de déploiement vers un serveur distant via SSH
     # - name: Deploy to server
