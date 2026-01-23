@@ -274,3 +274,235 @@ Sentry capturera automatiquement :
 Les logs sont également enregistrés localement dans le dossier `logs/` :
 - `django.log` : Tous les logs INFO et supérieurs
 - `django_errors.log` : Uniquement les erreurs (ERROR et CRITICAL)
+
+---
+
+## Déploiement
+
+### Vue d'ensemble
+
+Le projet utilise un pipeline CI/CD complet qui automatise les tests, la conteneurisation et le déploiement :
+
+```
+Push sur main → Tests & Linting → Build Docker → Push Docker Hub → Déploiement Render
+```
+
+**Hébergement actuel** :
+- **Application** : Render.com (plan gratuit)
+- **Base de données** : PostgreSQL sur Render
+- **Registre Docker** : Docker Hub
+- **CI/CD** : GitHub Actions
+
+### Architecture du pipeline
+
+Le pipeline CI/CD s'exécute automatiquement à chaque push sur la branche `main` :
+
+#### 1️⃣ **Job Test** (sur toutes les branches)
+- Installation des dépendances Python
+- Linting avec Flake8
+- Exécution des tests avec pytest
+- Vérification de la couverture > 80%
+
+#### 2️⃣ **Job Build** (uniquement sur `main`)
+- Construction de l'image Docker
+- Tag avec le hash du commit et `latest`
+- Push vers Docker Hub
+
+#### 3️⃣ **Job Deploy** (uniquement sur `main`)
+- Déclenchement du redéploiement sur Render
+- Render récupère la nouvelle image depuis Docker Hub
+
+### Configuration requise
+
+#### Secrets GitHub Actions
+
+Les secrets suivants doivent être configurés dans : `Settings → Secrets and variables → Actions`
+
+| Secret | Description | Exemple |
+|--------|-------------|---------|
+| `DOCKER_USER_NAME` | Nom d'utilisateur Docker Hub | `votre-username` |
+| `DOCKER_PASSWORD` | Token d'accès Docker Hub | `dckr_pat_xxx...` |
+| `RENDER_DEPLOY_HOOK` | URL du deploy hook Render | `https://api.render.com/deploy/...` |
+
+#### Variables d'environnement Render
+
+Les variables suivantes doivent être configurées dans le service Render :
+
+| Variable | Description | Exemple |
+|----------|-------------|---------|
+| `SECRET_KEY` | Clé secrète Django | Chaîne aléatoire sécurisée |
+| `DEBUG` | Mode debug (toujours False) | `False` |
+| `DJANGO_SETTINGS_MODULE` | Module settings à utiliser | `oc_lettings_site.settings.production` |
+| `DJANGO_ENV` | Environnement | `production` |
+| `DATABASE_URL` | URL PostgreSQL | Fournie par Render automatiquement |
+| `ALLOWED_HOSTS` | Domaines autorisés | `votre-app.onrender.com` |
+| `SENTRY_DSN` | DSN Sentry (optionnel) | `https://xxx@sentry.io/xxx` |
+
+### Déploiement manuel
+
+#### Étape 1 : Configuration Docker Hub
+
+1. Créez un compte sur [Docker Hub](https://hub.docker.com)
+2. Créez un Access Token : `Settings → Security → New Access Token`
+3. Ajoutez les secrets `DOCKER_USER_NAME` et `DOCKER_PASSWORD` sur GitHub
+
+#### Étape 2 : Configuration Render
+
+1. **Créer la base de données PostgreSQL**
+   - Dashboard Render → `New +` → `PostgreSQL`
+   - Nom : `oc-lettings-db`
+   - Plan : Free
+   - Notez l'**Internal Database URL**
+
+2. **Créer le service Web**
+   - Dashboard Render → `New +` → `Web Service`
+   - Type : `Existing Image`
+   - Image URL : `votreusername/oc-lettings:latest`
+   - Plan : Free
+   
+3. **Configurer les variables d'environnement**
+   - Ajoutez toutes les variables listées ci-dessus
+   - `DATABASE_URL` : copiez l'Internal Database URL de la base créée
+
+4. **Récupérer le Deploy Hook**
+   - Service → `Settings` → `Deploy Hook`
+   - Copiez l'URL et ajoutez-la comme secret `RENDER_DEPLOY_HOOK` sur GitHub
+
+#### Étape 3 : Premier déploiement
+
+1. Poussez vos changements sur la branche `main` :
+   ```bash
+   git add .
+   git commit -m "feat: Configure production deployment"
+   git push origin main
+   ```
+
+2. Suivez l'exécution sur GitHub Actions :
+   - https://github.com/votre-username/votre-repo/actions
+
+3. Une fois le workflow terminé, vérifiez le déploiement sur Render :
+   - Dashboard → Votre service → Onglet `Logs`
+
+4. Accédez à votre application :
+   - URL : `https://votre-app.onrender.com`
+
+### Tester l'image Docker localement
+
+Pour récupérer et lancer l'image depuis Docker Hub localement :
+
+**Windows (PowerShell)** :
+```powershell
+.\run-docker.ps1
+```
+
+**Linux/Mac** :
+```bash
+chmod +x run-docker.sh
+./run-docker.sh
+```
+
+L'application sera accessible sur http://localhost:8000
+
+**Commandes utiles** :
+```bash
+# Voir les logs
+docker logs oc-lettings-prod -f
+
+# Arrêter le conteneur
+docker stop oc-lettings-prod
+
+# Redémarrer
+docker start oc-lettings-prod
+
+# Supprimer
+docker rm oc-lettings-prod
+```
+
+### Vérifications post-déploiement
+
+Après chaque déploiement, vérifiez :
+
+✅ **Page d'accueil** : Le site se charge correctement  
+✅ **Fichiers statiques** : CSS/JS chargés (pas d'erreurs 404)  
+✅ **Interface admin** : `/admin` accessible avec apparence correcte  
+✅ **Base de données** : Les données sont bien présentes  
+✅ **Logs Sentry** : Si configuré, les erreurs remontent correctement  
+
+### Workflow de déploiement
+
+Pour déployer une nouvelle version :
+
+1. **Développez sur une branche feature**
+   ```bash
+   git checkout -b feature/ma-fonctionnalite
+   # ... développement ...
+   git commit -m "feat: Ma nouvelle fonctionnalité"
+   git push origin feature/ma-fonctionnalite
+   ```
+
+2. **Créez une Pull Request sur GitHub**
+   - Les tests s'exécutent automatiquement
+   - Attendez la validation (✅ tests passés)
+
+3. **Mergez vers main**
+   - Le déploiement automatique se déclenche
+   - Tests → Build → Deploy
+   - L'application est mise à jour sur Render
+
+### Rollback en cas de problème
+
+Si un déploiement échoue :
+
+1. **Via Render** :
+   - Dashboard → Service → `Manual Deploy`
+   - Choisir un commit précédent
+
+2. **Via Git** :
+   ```bash
+   # Revenir au commit précédent
+   git revert HEAD
+   git push origin main
+   ```
+
+3. **Via Docker Hub** :
+   - Modifier l'image dans Render vers un tag spécifique
+   - Exemple : `votreusername/oc-lettings:main-abc1234`
+
+### Logs et monitoring
+
+**Logs Render** :
+- Dashboard → Service → `Logs`
+- Affiche les logs en temps réel
+
+**Logs GitHub Actions** :
+- Repository → `Actions` → Sélectionner un workflow
+- Voir les détails de chaque job
+
+**Sentry (si configuré)** :
+- Monitoring des erreurs en production
+- Alertes automatiques par email
+
+### Coûts
+
+- **Render Free** : 750h/mois gratuit (suffisant pour 1 app)
+- **Docker Hub** : Plan gratuit (repos publics illimités)
+- **GitHub Actions** : 2000 minutes/mois gratuites
+- **Sentry** : Plan gratuit (5K événements/mois)
+
+**💰 Total : 0€/mois** pour un projet de formation
+
+### Troubleshooting
+
+**Le déploiement échoue sur Render** :
+- Vérifier les logs Render
+- Vérifier que toutes les variables d'environnement sont définies
+- Tester l'image localement avec `run-docker.ps1`
+
+**Les fichiers statiques ne se chargent pas** :
+- Vérifier que `collectstatic` s'est bien exécuté (logs)
+- Vérifier `STATIC_ROOT` et `STATIC_URL` dans production.py
+
+**L'interface admin est sans style** :
+- Les fichiers statiques ne sont pas collectés
+- WhiteNoise mal configuré
+- Vérifier `MIDDLEWARE` dans production.py
