@@ -337,6 +337,9 @@ Les variables suivantes doivent être configurées dans le service Render :
 | `DATABASE_URL` | URL PostgreSQL | Fournie par Render automatiquement |
 | `ALLOWED_HOSTS` | Domaines autorisés | `votre-app.onrender.com` |
 | `SENTRY_DSN` | DSN Sentry (optionnel) | `https://xxx@sentry.io/xxx` |
+| `DJANGO_SUPERUSER_USERNAME` | Username admin (optionnel) | `admin` |
+| `DJANGO_SUPERUSER_PASSWORD` | Password admin (optionnel) | Mot de passe sécurisé |
+| `DJANGO_SUPERUSER_EMAIL` | Email admin (optionnel) | `admin@example.com` |
 
 ### Déploiement manuel
 
