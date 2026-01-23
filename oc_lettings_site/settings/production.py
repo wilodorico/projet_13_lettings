@@ -54,9 +54,9 @@ DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
 
 
 # ----------------------------------------
-# Sentry - Required in production
+# Sentry - Optional in production
 # ----------------------------------------
-SENTRY_DSN = os.getenv("SENTRY_DSN")
+SENTRY_DSN = os.getenv("SENTRY_DSN", "").strip()
 if SENTRY_DSN:
     import sentry_sdk
 
