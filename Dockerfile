@@ -19,10 +19,10 @@ COPY . .
 # Create logs directory
 RUN mkdir -p logs
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
+# Make entrypoint script executable
+RUN chmod +x entrypoint.sh
 
 EXPOSE 8000
 
-# Use gunicorn for production
-CMD ["gunicorn", "oc_lettings_site.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+# Use entrypoint script
+ENTRYPOINT ["./entrypoint.sh"]

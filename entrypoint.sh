@@ -1,12 +1,14 @@
 #!/bin/sh
-# entrypoint.sh - pour Docker + Django
+# entrypoint.sh - Production entrypoint for Docker + Django
 
-# Quitte en cas d'erreur
+# Exit on error
 set -e
 
-# echo "🔄 Appliquer les migrations..."
-# python manage.py migrate
+echo "📦 Collecting static files..."
+python manage.py collectstatic --noinput
 
-echo "🚀 Lancement du serveur..."
-# En dev, runserver. En prod, on remplacera par gunicorn
-exec "$@"
+echo "🔄 Running database migrations..."
+python manage.py migrate --noinput
+
+echo "🚀 Starting Gunicorn server..."
+exec gunicorn oc_lettings_site.wsgi:application --bind 0.0.0.0:8000 --workers 3
