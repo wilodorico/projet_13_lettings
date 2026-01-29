@@ -1,6 +1,20 @@
+# Orange County Lettings
+
+[![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org)
+[![Django](https://img.shields.io/badge/Django-5.2-green.svg)](https://www.djangoproject.com)
+[![Documentation](https://readthedocs.org/projects/projet-13-lettings/badge/?version=latest)](https://projet-13-lettings.readthedocs.io/fr/latest/)
+[![CI/CD](https://github.com/wilodorico/projet_13_lettings/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/wilodorico/projet_13_lettings/actions)
+
 ## Résumé
 
-Site web d'Orange County Lettings
+Application web Django de gestion de locations immobilières et de profils utilisateurs dans le comté d'Orange, Californie.
+
+### Liens importants
+
+- **Application en production** : https://oc-lettings-bgqe.onrender.com
+- **Documentation technique** : https://projet-13-lettings.readthedocs.io/fr/latest/
+- **Repository GitHub** : https://github.com/wilodorico/projet_13_lettings
+- **Images Docker** : https://hub.docker.com/r/wilodorico/oc-lettings
 
 ## Développement local
 
@@ -9,8 +23,8 @@ Site web d'Orange County Lettings
 - Compte GitHub avec accès en lecture à ce repository
 - Git CLI
 - SQLite3 CLI
-- Interpréteur Python, version 3.6 ou supérieure
-- Compte Sentry (gratuit) pour la journalisation des erreurs
+- Interpréteur Python, version 3.12 ou supérieure
+- Compte Sentry (gratuit) pour la journalisation des erreurs (optionnel)
 
 Dans le reste de la documentation sur le développement local, il est supposé que la commande `python` de votre OS shell exécute l'interpréteur Python ci-dessus (à moins qu'un environnement virtuel ne soit activé).
 
@@ -19,23 +33,23 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 #### Cloner le repository
 
 - `cd /path/to/put/project/in`
-- `git clone https://github.com/OpenClassrooms-Student-Center/Python-OC-Lettings-FR.git`
+- `git clone https://github.com/wilodorico/projet_13_lettings.git`
 
 #### Créer l'environnement virtuel
 
-- `cd /path/to/Python-OC-Lettings-FR`
+- `cd /path/to/projet_13_lettings`
 - `python -m venv venv`
 - `apt-get install python3-venv` (Si l'étape précédente comporte des erreurs avec un paquet non trouvé sur Ubuntu)
 - Activer l'environnement `source venv/bin/activate`
 - Confirmer que la commande `python` exécute l'interpréteur Python dans l'environnement virtuel
 `which python`
-- Confirmer que la version de l'interpréteur Python est la version 3.6 ou supérieure `python --version`
+- Confirmer que la version de l'interpréteur Python est la version 3.12 ou supérieure `python --version`
 - Confirmer que la commande `pip` exécute l'exécutable pip dans l'environnement virtuel, `which pip`
 - Pour désactiver l'environnement, `deactivate`
 
 #### Exécuter le site
 
-- `cd /path/to/Python-OC-Lettings-FR`
+- `cd /path/to/projet_13_lettings`
 - `source venv/bin/activate`
 - `pip install --requirement requirements.txt`
 - Copier le fichier `.env.example` vers `.env` et configurer les variables (voir section Configuration Sentry)
@@ -45,19 +59,19 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 
 #### Linting
 
-- `cd /path/to/Python-OC-Lettings-FR`
+- `cd /path/to/projet_13_lettings`
 - `source venv/bin/activate`
 - `flake8`
 
 #### Tests unitaires
 
-- `cd /path/to/Python-OC-Lettings-FR`
+- `cd /path/to/projet_13_lettings`
 - `source venv/bin/activate`
 - `pytest`
 
 #### Base de données
 
-- `cd /path/to/Python-OC-Lettings-FR`
+- `cd /path/to/projet_13_lettings`
 - Ouvrir une session shell `sqlite3`
 - Se connecter à la base de données `.open oc-lettings-site.sqlite3`
 - Afficher les tables dans la base de données `.tables`
@@ -279,6 +293,8 @@ Les logs sont également enregistrés localement dans le dossier `logs/` :
 
 ## Déploiement
 
+> **📖 Documentation complète** : Pour des informations détaillées sur le déploiement, consultez la [documentation technique complète](https://projet-13-lettings.readthedocs.io/fr/latest/deployment.html).
+
 ### Vue d'ensemble
 
 Le projet utilise un pipeline CI/CD complet qui automatise les tests, la conteneurisation et le déploiement :
@@ -493,6 +509,23 @@ Si un déploiement échoue :
 - **Sentry** : Plan gratuit (5K événements/mois)
 
 **💰 Total : 0€/mois** pour un projet de formation
+
+---
+
+## Documentation complète
+
+📚 **[Documentation technique sur Read The Docs](https://projet-13-lettings.readthedocs.io/fr/latest/)**
+
+Pour des informations détaillées sur :
+- L'installation et la configuration
+- L'architecture et les technologies
+- La structure de la base de données
+- Les guides d'utilisation
+- Les procédures de déploiement complètes
+
+---
+
+**Projet réalisé dans le cadre de la formation OpenClassrooms - Parcours Développeur d'application Python**
 
 ### Troubleshooting
 
