@@ -10,3 +10,5 @@ sentry-sdk==2.19.2
 python-dotenv==1.0.1
 whitenoise==6.6.0
 psycopg2-binary==2.9.9
+sphinx==9.1.0
+sphinx-rtd-theme==3.0.2

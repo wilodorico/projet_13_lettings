@@ -37,3 +37,8 @@ htmlcov/
 .coverage.*
 coverage.xml
 *.cover
+
+# Sphinx documentation
+docs/_build/
+docs/_static/
+docs/_templates/
