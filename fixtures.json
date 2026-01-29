@@ -1,5 +1,90 @@
 [
 {
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$qinlQhKCYSSYBiSVGcmOcl$MJ6CRdS17QvlBT3SN+wTZSgU94W5Zdy+b9A4ceXFMlE=",
+        "last_login": "2025-11-14T16:43:34.196Z",
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "email": "admin@email.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2020-06-14T09:41:15.326Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$180000$8ZKjEEdeYubZ$jq4T/Vaa2DWdAvzNys4ynNO6Wd/PsWe3dux20F7BGgQ=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "4meRomance",
+        "first_name": "John",
+        "last_name": "Rodriguez",
+        "email": "coemperor@famemma.net",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-06-14T09:44:05Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$180000$DdNkE39rolFF$nGmWZanXv4GlcTxtfUgc+MUIqBgDszAtvFfuFu538LQ=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "AirWow",
+        "first_name": "Ada",
+        "last_name": "Paul",
+        "email": "flocation.vam4@glendenningflowerdesign.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-06-14T09:44:45Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$180000$3VJdHtu39cbD$8qNVkvJ0KddsvfFueEm09Sg0LxgFievigmtAEb39paE=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "DavWin",
+        "first_name": "Cassandra",
+        "last_name": "Grahm",
+        "email": "5houssam.kessaiso@facpidif.ml",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-06-14T09:46:28Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$180000$zjnQu4LiqMAT$Qxom08ahzw11iPlX6kYyySa94yJXdjrptta6Qzx8HWE=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "HeadlinesGazer",
+        "first_name": "Jamie",
+        "last_name": "Lal",
+        "email": "jssssss33@acee9.live",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-06-14T09:47:21Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
     "model": "letting.address",
     "pk": 1,
     "fields": {
