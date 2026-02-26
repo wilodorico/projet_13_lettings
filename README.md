@@ -22,7 +22,6 @@ Application web Django de gestion de locations immobilières et de profils utili
 
 - Compte GitHub avec accès en lecture à ce repository
 - Git CLI
-- SQLite3 CLI
 - Interpréteur Python, version 3.12 ou supérieure
 - Compte Sentry (gratuit) pour la journalisation des erreurs (optionnel)
 
@@ -69,17 +68,6 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 - `source venv/bin/activate`
 - `pytest`
 
-#### Base de données
-
-- `cd /path/to/projet_13_lettings`
-- Ouvrir une session shell `sqlite3`
-- Se connecter à la base de données `.open oc-lettings-site.sqlite3`
-- Afficher les tables dans la base de données `.tables`
-- Afficher les colonnes dans le tableau des profils, `pragma table_info(Python-OC-Lettings-FR_profile);`
-- Lancer une requête sur la table des profils, `select user_id, favorite_city from
-  Python-OC-Lettings-FR_profile where favorite_city like 'B%';`
-- `.quit` pour quitter
-
 #### Panel d'administration
 
 - Aller sur `http://localhost:8000/admin`
@@ -89,8 +77,7 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 
 Utilisation de PowerShell, comme ci-dessus sauf :
 
-- Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
-- Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
+- Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1`
 
 ## Déploiement avec Docker
 
@@ -103,12 +90,17 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 ### Configuration initiale
 
 1. **Copier et configurer les variables d'environnement**
-   ```bash
-   # Copier le fichier d'exemple
-   cp .env.example .env
    
+   **Windows (PowerShell)** :
+   ```powershell
+   Copy-Item .env.example .env
    # Éditer .env et configurer vos variables
-   # Notamment : SENTRY_DSN, SECRET_KEY, DEBUG, etc.
+   ```
+   
+   **Linux/Mac** :
+   ```bash
+   cp .env.example .env
+   # Éditer .env et configurer vos variables
    ```
 
 ### Démarrage de l'application
@@ -193,9 +185,6 @@ docker-compose exec web bash
 ```bash
 # Voir les conteneurs en cours d'exécution
 docker-compose ps
-
-# Voir les logs d'erreurs
-docker-compose logs web | grep -i error
 ```
 
 ### Utilisation sans Docker Compose
@@ -268,11 +257,9 @@ Sentry est configuré pour capturer automatiquement les erreurs et surveiller le
    - Récupérez votre DSN depuis Settings > Projects > Your Project > Client Keys (DSN)
 
 2. **Configurer les variables d'environnement**
-   ```bash
-   # Copier le fichier d'exemple
-   cp .env.example .env
    
-   # Éditer .env et ajouter vos informations Sentry
+   Copiez `.env.example` vers `.env` et éditez les valeurs :
+   ```env
    SENTRY_DSN=https://your-actual-dsn@sentry.io/project-id
    SENTRY_ENVIRONMENT=development  # ou production, staging, etc.
    ```
@@ -353,9 +340,6 @@ Les variables suivantes doivent être configurées dans le service Render :
 | `DATABASE_URL` | URL PostgreSQL | Fournie par Render automatiquement |
 | `ALLOWED_HOSTS` | Domaines autorisés | `votre-app.onrender.com` |
 | `SENTRY_DSN` | DSN Sentry (optionnel) | `https://xxx@sentry.io/xxx` |
-| `DJANGO_SUPERUSER_USERNAME` | Username admin (optionnel) | `admin` |
-| `DJANGO_SUPERUSER_PASSWORD` | Password admin (optionnel) | Mot de passe sécurisé |
-| `DJANGO_SUPERUSER_EMAIL` | Email admin (optionnel) | `admin@example.com` |
 
 ### Déploiement manuel
 
@@ -404,38 +388,6 @@ Les variables suivantes doivent être configurées dans le service Render :
 
 4. Accédez à votre application :
    - URL : `https://votre-app.onrender.com`
-
-### Tester l'image Docker localement
-
-Pour récupérer et lancer l'image depuis Docker Hub localement :
-
-**Windows (PowerShell)** :
-```powershell
-.\run-docker.ps1
-```
-
-**Linux/Mac** :
-```bash
-chmod +x run-docker.sh
-./run-docker.sh
-```
-
-L'application sera accessible sur http://localhost:8000
-
-**Commandes utiles** :
-```bash
-# Voir les logs
-docker logs oc-lettings-prod -f
-
-# Arrêter le conteneur
-docker stop oc-lettings-prod
-
-# Redémarrer
-docker start oc-lettings-prod
-
-# Supprimer
-docker rm oc-lettings-prod
-```
 
 ### Vérifications post-déploiement
 
@@ -510,6 +462,22 @@ Si un déploiement échoue :
 
 **💰 Total : 0€/mois** pour un projet de formation
 
+### Troubleshooting
+
+**Le déploiement échoue sur Render** :
+- Vérifier les logs Render
+- Vérifier que toutes les variables d'environnement sont définies
+- Tester l'image localement avec `docker-compose up`
+
+**Les fichiers statiques ne se chargent pas** :
+- Vérifier que `collectstatic` s'est bien exécuté (logs)
+- Vérifier `STATIC_ROOT` et `STATIC_URL` dans production.py
+
+**L'interface admin est sans style** :
+- Les fichiers statiques ne sont pas collectés
+- WhiteNoise mal configuré
+- Vérifier `MIDDLEWARE` dans production.py
+
 ---
 
 ## Documentation complète
@@ -526,19 +494,3 @@ Pour des informations détaillées sur :
 ---
 
 **Projet réalisé dans le cadre de la formation OpenClassrooms - Parcours Développeur d'application Python**
-
-### Troubleshooting
-
-**Le déploiement échoue sur Render** :
-- Vérifier les logs Render
-- Vérifier que toutes les variables d'environnement sont définies
-- Tester l'image localement avec `run-docker.ps1`
-
-**Les fichiers statiques ne se chargent pas** :
-- Vérifier que `collectstatic` s'est bien exécuté (logs)
-- Vérifier `STATIC_ROOT` et `STATIC_URL` dans production.py
-
-**L'interface admin est sans style** :
-- Les fichiers statiques ne sont pas collectés
-- WhiteNoise mal configuré
-- Vérifier `MIDDLEWARE` dans production.py
